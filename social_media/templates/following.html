@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="font-sans flex flex-col items-center">
+        <header class="bg-black py-6 w-full">
+            <div class="container mx-auto text-center">
+                <h1 class="text-3xl font-bold text-white">Followers</h1>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="container mx-auto px-4 py-8 flex flex-col items-center">
+            {% if profile.followed_by.all %}
+                {% for followed in profile.followed_by.all %}
+                <div class="space-y-6 w-full max-w-md">
+                    <!-- User Card -->
+                    <div class="flex items-center bg-gray-800 rounded-lg shadow-md p-4">
+                        <img src="https://via.placeholder.com/60" alt="Profile Picture" 
+                             class="w-16 h-16 rounded-full object-cover border-2 border-gray-700">
+                        <div class="ml-4 flex-grow">
+                            <h3 class="text-sm font-semibold text-blue-400">@{{ followed.user }}</h3>
+                            <p class="text-sm font-semibold text-white">Alex Johnson</p>
+                            <p class="text-xs text-gray-400">Photographer</p>
+                        </div>
+                        <a href="{% url 'profile' followed.user_id %}" class="bg-blue-600 text-white text-sm px-3 py-2 rounded-md hover:bg-blue-500 transition">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-400 text-lg mt-8">{{ profile.user }} doesn't have any followers yet.</p>
+            {% endif %}
+        </main>
+    </div>
+{% endblock content %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="side-nav">
+        <a href="{% url 'home' %}" class="icon-link">
+            <i class="bi bi-house-door-fill icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-search icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-bell icon"></i>
+            <span>Notifications</span>
+        </a>
+        <a href="{% url 'profile' user.profile.user_id %}" class="icon-link">
+            <i class="bi bi-person-circle icon"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{% url 'create' %}" class="icon-link">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Post</span>
+        </a>
+        <a href="{% url 'logout' %}" class="icon-link">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+    
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-header">
+            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
+                 alt="Profile Picture">
+            <div class="profile-info">
+                <h1>@{{ profile.user }}</h1>
+                <p>Web Developer | Content Creator</p>
+                <button class="edit-btn">Edit Profile</button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="profile-stats">
+            <div class="stat">
+                <span>{{ num_posts }}</span>
+                <p>Posts</p>
+            </div>
+            <div class="stat">
+                <a href="{% url 'follows' user.profile.user_id %}" class="link">
+                    {{ followed_by }}
+                </a>
+                <p>
+                    <a href="{% url 'follows' user.profile.user_id %}" class="link">
+                        followers
+                    </a>
+                </p>
+            </div>
+            <div class="stat">
+                <a href="{% url 'followed' user.profile.user_id %}" class="link">
+                    {{ follows }}
+                </a>
+                <a href="{% url 'followed' user.profile.user_id %}">
+                    <p>Following</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navbar Section -->
+        <div class="navbar-custom">
+            <a href="{% url 'profile' user.profile.user_id %}">Posts<i class="bi bi-chat"></i></a>
+            <a href="{% url 'audios' user.profile.user_id %}" class="active">Audios<i class="bi bi-music-note-beamed"></i></a>
+            <a href="#">Likes<i class="bi bi-heart"></i></a>
+        </div>
+        <br>
+        
+            <!-- Posts Section -->
+        <div class="flex flex-col space-y-6">
+
+        {% for audio_post, post in audio_combined %}
+            <!-- Card Container -->
+            <div class="bg-[#222] rounded-lg shadow-lg p-4">
+                <div class="flex flex-col space-y-3">
+                    <!-- Audio Player -->
+                    <audio controls class="w-full">
+                        <source src="{{ audio_post.media_file.url }}">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <!-- Description / Body Text -->
+                    <p class="text-gray-300 text-sm">
+                        {{ post.body }}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+
+        </div>
+        
+    </div>
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+        <div class="overlay"></div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h2 onclick="scrollToSection('welcome')">Connectly</h2>
+        <ul>
+            <li onclick="scrollToSection('about')">About</li>
+            <li onclick="scrollToSection('features')">Features</li>
+            <li onclick="scrollToSection('contact')">Contact</li>
+        </ul>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="section welcome-section" id="welcome">
+        <h2 id="dynamic-text">Welcome to Connectly</h2>
+        <p>
+            Connectly is your platform for meaningful connections. Dive into a vibrant social experience that redefines how we stay in touch.
+        </p>
+        <div class="welcome-buttons">
+            <a href="http://localhost:8000/login/"><button class="login-btn">Login</button></a>
+            <button class="signup-btn" onclick="alert('Sign Up Clicked')">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="section" id="about">
+        <h2>About Us</h2>
+        <p>
+            At Connectly, our mission is to connect people across the world through a seamless, secure, and enjoyable digital experience.
+            Whether you're reconnecting with old friends, networking for your career, or sharing moments with loved ones, Connectly makes it effortless.
+        </p>
+    </div>
+
+    <!-- Features Section -->
+    <div class="section" id="features">
+        <h2>Features</h2>
+        <div class="feature-item">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/027/819/587/small_2x/beautiful-black-woman-holding-her-cell-phone-with-fingers-on-the-screen-free-photo.jpg" alt="Feature 1">
+            <h3>Easy Connections</h3>
+            <p>Stay close to those who matter most with a user-friendly interface designed for effortless communication.</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="section" id="contact">
+        <h2>Contact Us</h2>
+        <form class="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <!-- <footer>
+        <p>&copy; 2024 Connectly. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer> -->
+    <script src="{% static 'js/welcome_page.js' %}"></script>
+{% endblock content %}

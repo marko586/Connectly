@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="position-relative vh-100 overflow-hidden">
+    <!-- Slideshow Section -->
+    <div id="slideshow" class="carousel slide vh-100 w-100 position-absolute top-0 start-0" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner h-100">
+            <div class="carousel-item active h-100">
+                <img src="https://media.istockphoto.com/id/1420486889/photo/candid-portrait-of-young-middle-eastern-digital-native.jpg?s=612x612&w=0&k=20&c=SV7ZhKg7qCeL6oYZGBaIxqfTTrQZu08kndvIKqdL_PI=" class="d-block w-100 h-100 object-cover" alt="Image 1">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://st.depositphotos.com/1064537/2318/i/450/depositphotos_23185896-stock-photo-handshake-hand-holding-on-black.jpg" class="d-block w-100 h-100 object-cover" alt="Image 2">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://tapinto-production.s3.amazonaws.com/uploads/articles/6d/best_crop_157a62c5c960be9ce43d_6d687bf0-cd02-43d8-938a-c27430ad898d.jpg?id=5484495" class="d-block w-100 h-100 object-cover" alt="Image 3">
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form Section -->
+    <div class="position-absolute top-50 start-0 translate-middle-y p-4 bg-dark text-light shadow-lg ms-4" 
+         style="max-width: 320px; min-height: 450px; border-radius: 20px;">
+        <h2 class="text-center text-primary mb-4">Login</h2>
+        <form method="POST" action="{% url 'login' %}" id="login-form">
+            {% csrf_token %}
+            <!-- Username or Email -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Username or Email</label>
+                <input type="text" name="username" class="form-control bg-dark text-light border-secondary" placeholder="Enter your username or email" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3 position-relative">
+                <label for="password" class="form-label">Password</label>
+                <div class="position-relative">
+                    <input type="password" id="password" name="password" class="form-control bg-dark text-light border-secondary" placeholder="Enter your password" required>
+                    <input type="hidden" id="recaptcha_token" name="recaptcha_token">
+                    <button type="button" id="toggle-password" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2">
+                        <i id="password-icon" class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary" id="login-button">Login</button>
+            </div>
+            <!-- Login with Google -->
+            <div class="text-center my-3">
+                <a href="http://localhost:8000/accounts/google/login/" class="btn btn-outline-light w-100">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                         alt="Google Logo" width="20" class="me-2">
+                    Login with Google
+                </a>
+            </div>
+
+
+            <!-- Forgot Password -->
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none text-primary">Sign up</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle Password Visibility
+        const passwordInput = document.getElementById('password');
+        const togglePasswordButton = document.getElementById('toggle-password');
+        const passwordIcon = document.getElementById('password-icon');
+
+        togglePasswordButton.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.className = 'bi bi-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.className = 'bi bi-eye';
+            }
+        });
+
+        // reCAPTCHA Integration
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevent form submission until reCAPTCHA is resolved
+
+            grecaptcha.enterprise.ready(async () => {
+                const token = await grecaptcha.enterprise.execute('6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7', { action: 'LOGIN' });
+                document.getElementById('recaptcha_token').value = token;
+
+                // After setting the token, submit the form
+                loginForm.submit();
+            });
+        });
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+        <div class="side-nav">
+        <a href="http://localhost:8000/home/" class="icon-link">
+            <i class="bi bi-house-door-fill icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-search icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-bell icon"></i>
+            <span>Notifications</span>
+        </a>
+        <a href="http://localhost:8000/profile/{{ user.profile.user_id }}" class="icon-link">
+            <i class="bi bi-person-circle icon"></i>
+            <span>Profile</span>
+        </a>
+        <a href="http://localhost:8000/create/" class="icon-link">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Post</span>
+        </a>
+        <a href="http://localhost:8000/logout/" class="icon-link">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+<div class="container mx-auto py-8">
+    <div class="flex justify-center items-center">
+        <div class="bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-xl">
+            <h2 class="text-white text-2xl font-semibold mb-6 text-center">Create a New Post</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div id="file-preview" class="mt-4 bg-gray-700 p-4 rounded-md flex items-center justify-center">
+                    <p class="text-gray-400">No file selected</p>
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" 
+                        class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-600">
+                        Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('input[type="file"]');
+        const previewContainer = document.querySelector('#file-preview');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                const file = fileInput.files[0];
+                previewContainer.innerHTML = ''; // Clear previous preview
+
+                if (file) {
+                    if (file.type.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.alt = 'File Preview';
+                        img.className = 'max-w-full h-auto rounded-md';
+                        previewContainer.appendChild(img);
+                    } else {
+                        previewContainer.innerHTML = '<p class="text-gray-400">Selected file cannot be previewed.</p>';
+                    }
+                } else {
+                    previewContainer.innerHTML = '<p class="text-gray-400">No file selected</p>';
+                }
+            });
+        }
+    });
+</script>
+{% endblock content %}
+

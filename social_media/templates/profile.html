@@ -1,0 +1,100 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
+    <div class="side-nav">
+        <a href="http://localhost:8000/home/" class="icon-link">
+            <i class="bi bi-house-door-fill icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-search icon"></i>
+            <span>Search</span>
+        </a>
+        <a href="#" class="icon-link">
+            <i class="bi bi-bell icon"></i>
+            <span>Notifications</span>
+        </a>
+        <a href="http://localhost:8000/profile/{{ user.profile.user_id }}" class="icon-link">
+            <i class="bi bi-person-circle icon"></i>
+            <span>Profile</span>
+        </a>
+        <a href="http://localhost:8000/create/" class="icon-link">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Post</span>
+        </a>
+        <a href="http://localhost:8000/logout/" class="icon-link">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-header">
+            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg" alt="Profile Picture">
+            <div class="profile-info">
+            <h1>@{{ profile.user }}</h1>
+                <form method="post">
+                {% csrf_token %}
+                {% if profile in user.profile.follows.all %}
+                    <button class="bg-red-500 text-white font-bold py-2 px-4 rounded shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all" name="follow" value="unfollow" type="submit">
+                        Unfollow
+                    </button>
+                {% else %}    
+                    <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all" name="follow" value="follow" type="submit">
+                        Follow
+                    </button>
+                {% endif %}
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="profile-stats">
+            <div class="stat">
+                <span>{{ num_posts }}</span>
+                <p>Posts</p>
+            </div>
+            <div class="stat">
+                <a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">{{ followed_by }}</a>
+                <p><a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">followers</a></p>
+            </div>
+            <div class="stat">
+                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/" class="link">{{ follows }}</a>
+                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/"><p>Following</p></a>
+            </div>
+        </div>
+
+        <!-- Navbar Section -->
+        <div class="navbar-custom">
+            <a href="http://localhost:8000/profile/{{ profile.user_id }}" class="active">Posts<i class="bi bi-chat"></i></a>
+            <a href="http://localhost:8000/profile/{{ profile.user_id }}/audios/">Audios<i class="bi bi-music-note-beamed"></i></a>
+            <a href="#">Likes<i class="bi bi-heart"></i></a>
+        </div>
+
+        <!-- Posts Section -->
+        <div class="posts-section">
+            {% for media_post in media_posts %}
+                <div class="post">
+                
+                    {% if media_post.get_media_type == "image" %}
+                        <img src="{{ media_post.media_file.url }}" 
+                             alt="Uploaded Image" 
+                             class="object-contain w-100 h-100">
+                    {% elif media_post.get_media_type == "video" %}
+                        <video controls style="width: 500px; height: 500px; object-fit: cover;">
+                            <source src="{{ media_post.media_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                    
+                    <div class="post-overlay">
+                        <a href="#">View Post</a>
+                    </div>
+                
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
