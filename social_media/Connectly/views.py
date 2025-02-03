@@ -138,14 +138,21 @@ def home(request):
     if request.user.is_authenticated:
         posts=Post.objects.all().order_by('-created')
         if request.method == 'POST':
-            current_user = request.user.profile
+            current_user = request.user
             target_user_id = request.POST.get('target_user_id')
-            action = request.POST['follow']
+            target_post_id = request.POST.get('target_post_id')
+            action = request.POST.get('follow')
+            action_post = request.POST.get('like')
             target_profile = Profile.objects.get(user_id=target_user_id)
+            target_post=Post.objects.get(id=target_post_id)
+            if action_post == 'like':
+                target_post.likes.add(current_user.profile)
+            elif action_post == 'unlike':
+                target_post.likes.remove(current_user.profile)
             if action == 'unfollow':
-                current_user.follows.remove(target_profile)
+                current_user.profile.follows.remove(target_profile)
             elif action == 'follow':
-                current_user.follows.add(target_profile)
+                current_user.profile.follows.add(target_profile)
             current_user.save()
         return render(request,'home.html',{'posts':posts})
     else:

@@ -25,6 +25,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 class Post(models.Model):
+    likes = models.ManyToManyField(Profile, related_name='liked', symmetrical=False, blank=True)
     media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file], blank=False, null=True)
     author = models.ForeignKey(User,related_name='posts', on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=200)

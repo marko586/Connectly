@@ -89,9 +89,26 @@
 
             <!-- Like and Comment Buttons -->
             <div class="flex items-center justify-between mt-4">
-                <button class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                    <i class="bi bi-heart mr-2"></i> Like
-                </button>
+            {% if post.author.profile.user_id == user.profile.user_id %}
+                <p>it's your post</p>
+            {% else %}    
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="target_user_id" value="{{ post.author.profile.user_id }}">
+                    <input type="hidden" name="target_post_id" value="{{ post.id }}">
+
+                    {% if user.profile in post.likes.all %}
+                    <button type="submit" name="like" value="unlike" class="flex items-center text-gray-400 hover:text-blue-400 transition">
+                        <i class="bi bi-heart-fill"></i> Unlike
+                    </button>
+                    {% else %}
+                        <button type="submit" name="like" value="like" class="flex items-center text-gray-400 hover:text-blue-400 transition">
+                            <i class="bi bi-heart"></i> Like
+                        </button>
+                    {% endif %}
+                </form>
+
+            {% endif %}
                 <button class="flex items-center text-gray-400 hover:text-blue-400 transition">
                     <i class="bi bi-chat mr-2"></i> Comment
                 </button>
