@@ -48,16 +48,13 @@
             <!-- Login with Google -->
             <div class="text-center my-3">
                 <a href="http://localhost:8000/accounts/google/login/" class="btn btn-outline-light w-100">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                         alt="Google Logo" width="20" class="me-2">
-                    Login with Google
+                    <i class="bi bi-google"></i>Login with Google
                 </a>
             </div>
 
 
-            <!-- Forgot Password -->
             <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none text-primary">Sign up</a>
+                <a href="{% url 'register' %}" class="text-decoration-none text-primary">Sign up</a>
             </div>
         </form>
     </div>

@@ -22,6 +22,8 @@ def validate_media_file(value):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
+    bio = models.TextField(max_length=200, blank=True)
+    profile_picture = models.ImageField(upload_to=upload_location, null=True, blank=True)
     def __str__(self):
         return self.user.username
 class Post(models.Model):

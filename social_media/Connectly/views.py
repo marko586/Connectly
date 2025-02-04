@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.urls import reverse
 from Connectly.models import Profile, Post
-from Connectly.post_form import PostForm
+from Connectly.forms import PostForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from google.cloud import recaptchaenterprise_v1
 from google.cloud.recaptchaenterprise_v1 import Assessment
@@ -198,16 +199,40 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'You have been logged in!')
-                return redirect(f'http://localhost:8000/profile/{request.user.profile.user_id}')
+                return redirect(reverse('profile', args=[request.user.profile.user_id]))
             else:
                 messages.success(request, 'Something went wrong please try again')
                 return redirect('login')
         else:
             return render(request,'login.html')
     else:
-        return redirect(f'http://localhost:8000/profile/{request.user.profile.user_id}')
+        return redirect(reverse('profile', args=[request.user.profile.user_id]))
 
 def logout_user(request):
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect(f'http://localhost:8000/')
+    return redirect(reverse('welcome'))
+def register_user(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('profile', args=[request.user.profile.user_id]))
+    else:
+        register_form = RegisterForm()
+        if request.method == 'POST':
+            register_form = RegisterForm(request.POST)
+            recaptcha_token = request.POST.get('recaptcha_token')
+            if not validate_recaptcha(recaptcha_token, "REGISTER"):
+                messages.error(request, 'reCAPTCHA validation failed. Please try again.')
+                return redirect('register')
+            if register_form.is_valid():
+                register_form.save()
+                username = register_form.cleaned_data.get('username')
+                email = register_form.cleaned_data.get('email')
+                password = register_form.cleaned_data.get('password1')
+                user=authenticate(email=email, password=password)
+                login(request, user)
+                messages.success(request, 'Your account has been created!')
+                return redirect(reverse('profile', args=[request.user.profile.user_id]))
+            else:
+                messages.success(request, 'Something went wrong please try again')
+                return render(request, 'register.html', {'register_form': register_form})
+        return render(request, 'register.html', {'register_form': register_form})
