@@ -68,24 +68,22 @@
 
         <!-- Navbar Section -->
         <div class="navbar-custom">
-            <a href="{% url 'profile' user.profile.user_id %}" class="active">Posts<i class="bi bi-chat"></i></a>
+            <a href="{% url 'profile' user.profile.user_id %}">Posts<i class="bi bi-chat"></i></a>
             <a href="{% url 'audios' user.profile.user_id %}">Audios<i class="bi bi-music-note-beamed"></i></a>
-            <a href="{% url 'likes' user.profile.user_id %}">Likes<i class="bi bi-heart"></i></a>
+            <a href="{% url 'likes' user.profile.user_id %}" class="active">Likes<i class="bi bi-heart"></i></a>
         </div>
-
-        
             <!-- Posts Section -->
             <div class="posts-section">
-            {% for media_post in media_posts %}
+            {% for liked_post in liked_posts %}
                 <div class="post">
                 
-                    {% if media_post.get_media_type == "image" %}
-                        <img src="{{ media_post.media_file.url }}" 
+                    {% if liked_post.get_media_type == "image" %}
+                        <img src="{{ liked_post.media_file.url }}" 
                              alt="Uploaded Image" 
                              class="object-contain w-100 h-100">
                     {% elif media_post.get_media_type == "video" %}
                         <video controls style="width: 500px; height: 500px; object-fit: cover;">
-                            <source src="{{ media_post.media_file.url }}" type="video/mp4">
+                            <source src="{{ liked_post.media_file.url }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     {% endif %}
@@ -97,6 +95,5 @@
                 </div>
             {% endfor %}
             </div>
-        
     </div>
 {% endblock content %}

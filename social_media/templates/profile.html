@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
     <div class="side-nav">
-        <a href="http://localhost:8000/home/" class="icon-link">
+        <a href="{% url 'home' %}" class="icon-link">
             <i class="bi bi-house-door-fill icon"></i>
             <span>Home</span>
         </a>
@@ -14,15 +14,15 @@
             <i class="bi bi-bell icon"></i>
             <span>Notifications</span>
         </a>
-        <a href="http://localhost:8000/profile/{{ user.profile.user_id }}" class="icon-link">
+        <a href="{% url 'profile' user.profile.user_id %}" class="icon-link">
             <i class="bi bi-person-circle icon"></i>
             <span>Profile</span>
         </a>
-        <a href="http://localhost:8000/create/" class="icon-link">
+        <a href="{% url 'create' %}" class="icon-link">
             <i class="bi bi-plus-circle"></i>
             <span>Add Post</span>
         </a>
-        <a href="http://localhost:8000/logout/" class="icon-link">
+        <a href="{% url 'logout' %}" class="icon-link">
             <i class="bi bi-box-arrow-left"></i>
             <span>Logout</span>
         </a>
@@ -57,20 +57,20 @@
                 <p>Posts</p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">{{ followed_by }}</a>
-                <p><a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">followers</a></p>
+                <a href="{% url 'followed' profile.user_id %}" class="link">{{ followed_by }}</a>
+                <p><a href="{% url 'followed' profile.user_id %}" class="link">followers</a></p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/" class="link">{{ follows }}</a>
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/"><p>Following</p></a>
+                <a href="{% url 'follows' profile.user_id %}" class="link">{{ follows }}</a>
+                <a href="{% url 'follows' profile.user_id %}"><p>Following</p></a>
             </div>
         </div>
 
         <!-- Navbar Section -->
         <div class="navbar-custom">
-            <a href="http://localhost:8000/profile/{{ profile.user_id }}" class="active">Posts<i class="bi bi-chat"></i></a>
-            <a href="http://localhost:8000/profile/{{ profile.user_id }}/audios/">Audios<i class="bi bi-music-note-beamed"></i></a>
-            <a href="#">Likes<i class="bi bi-heart"></i></a>
+            <a href="{% url 'profile' profile.user_id %}" class="active">Posts<i class="bi bi-chat"></i></a>
+            <a href="{% url 'audios' profile.user_id %}">Audios<i class="bi bi-music-note-beamed"></i></a>
+            <a href="{% url 'likes' profile.user_id %}">Likes<i class="bi bi-heart"></i></a>
         </div>
 
         <!-- Posts Section -->

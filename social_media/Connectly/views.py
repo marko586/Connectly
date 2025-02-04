@@ -99,11 +99,25 @@ def profile(request, id):
         media_posts=Post.objects.filter(author_id=id, media_file__iregex=r'\.(jpg|jpeg|png|gif|mp4|mov|avi|mkv)$').order_by('-created')
         audio_posts=Post.objects.filter(author_id=id,media_file__iregex=r'\.(mp3|wav|ogg)$').order_by('-created')
         audio_combined=zip(audio_posts,posts)
+        liked_posts=Post.objects.filter(likes__id=profile.user_id)
+        context = {
+            'num_posts': num_posts,
+            'profile': profile,
+            'follows': follows,
+            'followed_by': followed_by,
+            'posts': posts,
+            'media_posts': media_posts,
+            'audio_posts': audio_posts,
+            'audio_combined': audio_combined,
+            'liked_posts': liked_posts,
+        }
         if request.user.profile.user_id == profile.user_id:
             if request.path.endswith(f'/{request.user.id}/'):
-                return render(request, 'your_profile.html', {'profile': profile, 'follows':follows, 'followed_by':followed_by, 'num_posts':num_posts, 'media_posts':media_posts, 'audio_posts':audio_posts, 'audio_combined':audio_combined})
+                return render(request, 'your_profile.html', context)
             elif request.path.endswith(f'/{request.user.id}/audios/'):
-                return render(request, 'your_profile_audios.html', {'profile': profile, 'num_posts':num_posts, 'audio_posts':audio_posts, 'follows':follows, 'followed_by':followed_by, 'audio_combined':audio_combined})
+                return render(request, 'your_profile_audios.html', context)
+            elif request.path.endswith(f'/{request.user.id}/likes/'):
+                return render(request, 'your_profile_likes.html', context)
         else:
             if request.method == 'POST':
                 current_user = request.user.profile
@@ -114,9 +128,9 @@ def profile(request, id):
                     current_user.follows.add(profile)
                 current_user.save()
             if request.path.endswith(f'/{profile.user_id}/'):
-                return render(request, 'profile.html', {'profile': profile, 'follows':follows, 'followed_by':followed_by, 'media_posts': media_posts, 'num_posts':num_posts, 'audio_combined':audio_combined})
+                return render(request, 'profile.html', context)
             elif request.path.endswith(f'/{profile.user_id}/audios/'):
-                return render(request, 'profile_audios.html', {'profile': profile, 'follows':follows, 'followed_by':followed_by, 'audio_posts':audio_posts, 'num_posts':num_posts, 'audio_combined':audio_combined})
+                return render(request, 'profile_audios.html', context)
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')

@@ -14,7 +14,7 @@
             <i class="bi bi-bell icon"></i>
             <span>Notifications</span>
         </a>
-        <a href="{% url 'profile' profile.user_id %}" class="icon-link">
+        <a href="{% url 'profile' user.profile.user_id %}" class="icon-link">
             <i class="bi bi-person-circle icon"></i>
             <span>Profile</span>
         </a>
@@ -57,42 +57,44 @@
                 <p>Posts</p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">{{ followed_by }}</a>
-                <p><a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">followers</a></p>
+                <a href="{% url 'followed' profile.user_id %}" class="link">{{ followed_by }}</a>
+                <p><a href="{% url 'followed' profile.user_id %}" class="link">followers</a></p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/" class="link">{{ follows }}</a>
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/"><p>Following</p></a>
+                <a href="{% url 'follows' profile.user_id %}" class="link">{{ follows }}</a>
+                <a href="{% url 'follows' profile.user_id %}"><p>Following</p></a>
             </div>
         </div>
 
         <!-- Navbar Section -->
         <div class="navbar-custom">
-            <a href="{% url 'profile' profile.user_id %}">Posts<i class="bi bi-chat"></i></a>
-            <a href="{% url 'audios' profile.user_id %}" class="active">Audios<i class="bi bi-music-note-beamed"></i></a>
+            <a href="{% url 'profile' profile.user_id %}" class="active">Posts<i class="bi bi-chat"></i></a>
+            <a href="{% url 'audios' profile.user_id %}">Audios<i class="bi bi-music-note-beamed"></i></a>
             <a href="{% url 'likes' profile.user_id %}">Likes<i class="bi bi-heart"></i></a>
         </div>
-        <br>
-        <div class="flex flex-col space-y-6">
 
-        {% for audio_post, post in audio_combined %}
-            <!-- Card Container -->
-            <div class="bg-[#222] rounded-lg shadow-lg p-4">
-                <div class="flex flex-col space-y-3">
-                    <!-- Audio Player -->
-                    <audio controls class="w-full">
-                        <source src="{{ audio_post.media_file.url }}">
-                        Your browser does not support the audio element.
-                    </audio>
-
-                    <!-- Description / Body Text -->
-                    <p class="text-gray-300 text-sm">
-                        {{ post.body }}
-                    </p>
+        <!-- Posts Section -->
+        <div class="posts-section">
+            {% for liked_post in liked_posts %}
+                <div class="post">
+                
+                    {% if liked_post.get_media_type == "image" %}
+                        <img src="{{ liked_post.media_file.url }}" 
+                             alt="Uploaded Image" 
+                             class="object-contain w-100 h-100">
+                    {% elif liked_post.get_media_type == "video" %}
+                        <video controls style="width: 500px; height: 500px; object-fit: cover;">
+                            <source src="{{ liked_post.media_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                    
+                    <div class="post-overlay">
+                        <a href="#">View Post</a>
+                    </div>
+                
                 </div>
-            </div>
-        {% endfor %}
-
+            {% endfor %}
         </div>
     </div>
 {% endblock content %}

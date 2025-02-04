@@ -5,6 +5,7 @@ urlpatterns=[
     path('', welcome ,name='welcome'),
     path('profile/<int:id>/', profile, name='profile'),
     path('profile/<int:id>/audios/', profile, name='audios'),
+    path('profile/<int:id>/likes/', profile, name='likes'),
     path('profile/<int:id>/follows/', follows, name='follows'),
     path('profile/<int:id>/followed/', followed, name='followed'),
     path('home/', home, name='home'),

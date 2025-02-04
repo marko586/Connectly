@@ -63,9 +63,6 @@
                 </div>
                 {% endif %}
             </div>
-
-            <!-- Post Content -->
-            <!-- Changed ratio to 4x3 for a taller (longer) aspect ratio -->
             {% if post.get_media_type == "image" %}
                 <div class="ratio ratio-4x3 rounded overflow-hidden mb-3 w-full">
                     <img src="{{ post.media_file.url }}" alt="Uploaded Image" class="object-contain w-100 h-100">
@@ -99,11 +96,11 @@
 
                     {% if user.profile in post.likes.all %}
                     <button type="submit" name="like" value="unlike" class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                        <i class="bi bi-heart-fill"></i> Unlike
+                        <i class="bi bi-heart-fill"></i>{{ count_likes }}
                     </button>
                     {% else %}
                         <button type="submit" name="like" value="like" class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                            <i class="bi bi-heart"></i> Like
+                            <i class="bi bi-heart"></i> {{ count_likes }}
                         </button>
                     {% endif %}
                 </form>
