@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import datetime
 
-import datetime
 
 def upload_location(instance, filename):
     now = datetime.datetime.now()
@@ -24,6 +23,11 @@ class Profile(models.Model):
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
     def __str__(self):
         return self.user.username
+def create_profile(sender,instance,created,**kwargs):
+    if created:
+        user_profile = Profile(user=instance)
+        user_profile.save()
+post_save.connect(create_profile, sender=User)
 class Post(models.Model):
     likes = models.ManyToManyField(Profile, related_name='liked', symmetrical=False, blank=True)
     media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file], blank=False, null=True)

@@ -151,6 +151,11 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = '/home'  # Redirect after login
 LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_ADAPTER = 'Connectly.adapter.MySocialAccountAdapter'
+ACCOUNT_FORMS = {
+    'signup': 'Connectly.forms.CustomSocialSignupForm',
+}
 
 # Google OAuth credentials
 SOCIALACCOUNT_PROVIDERS = {

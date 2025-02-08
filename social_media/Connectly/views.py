@@ -2,12 +2,15 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.urls import reverse
 from Connectly.models import Profile, Post
-from Connectly.post_form import PostForm
+from Connectly.forms import PostForm, SignUpForm
 from django.contrib.auth import authenticate, login, logout
 from google.cloud import recaptchaenterprise_v1
 from google.cloud.recaptchaenterprise_v1 import Assessment
 from google.oauth2 import service_account
+from allauth.socialaccount.models import SocialAccount
+from allauth.account.utils import user_email
 
 from google.cloud import recaptchaenterprise_v1
 
@@ -89,15 +92,15 @@ def welcome(request):
     else:
         return render(request,'welcome_page.html', context)
 
-def profile(request, id):
+def profile(request, user_id):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user_id=id)
+        profile = Profile.objects.get(user_id=user_id)
         follows=len(profile.follows.all())
         followed_by=len(profile.followed_by.all())
-        posts=Post.objects.filter(author=id).order_by('-created')
-        num_posts=Post.objects.filter(author=id).count()
-        media_posts=Post.objects.filter(author_id=id, media_file__iregex=r'\.(jpg|jpeg|png|gif|mp4|mov|avi|mkv)$').order_by('-created')
-        audio_posts=Post.objects.filter(author_id=id,media_file__iregex=r'\.(mp3|wav|ogg)$').order_by('-created')
+        posts=Post.objects.filter(author=user_id).order_by('-created')
+        num_posts=Post.objects.filter(author=user_id).count()
+        media_posts=Post.objects.filter(author_id=user_id, media_file__iregex=r'\.(jpg|jpeg|png|gif|mp4|mov|avi|mkv)$').order_by('-created')
+        audio_posts=Post.objects.filter(author_id=user_id,media_file__iregex=r'\.(mp3|wav|ogg)$').order_by('-created')
         audio_combined=zip(audio_posts,posts)
         liked_posts=Post.objects.filter(likes__id=profile.user_id)
         context = {
@@ -198,16 +201,55 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'You have been logged in!')
-                return redirect(f'http://localhost:8000/profile/{request.user.profile.user_id}')
+                return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
             else:
                 messages.success(request, 'Something went wrong please try again')
                 return redirect('login')
         else:
             return render(request,'login.html')
     else:
-        return redirect(f'http://localhost:8000/profile/{request.user.profile.user_id}')
+        return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
 
 def logout_user(request):
     logout(request)
     messages.success(request, 'You have been logged out')
     return redirect(f'http://localhost:8000/')
+
+def register_user(request):
+    # Redirect if already logged in
+    if request.user.is_authenticated:
+        return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
+
+    initial = {}
+
+    # Check if the user is coming from Google login
+    sociallogin = request.session.get('socialaccount_sociallogin')
+    if sociallogin:
+        extra_data = sociallogin['account']['extra_data']
+        initial = {
+            'first_name': extra_data.get('given_name', ''),
+            'last_name': extra_data.get('family_name', ''),
+            'email': extra_data.get('email', ''),
+        }
+        # ✅ Don't pre-fill username → User chooses it
+
+    form = SignUpForm(request.POST or None, initial=initial)
+
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.save()
+
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, 'Your account has been created!')
+            return redirect(reverse('profile', kwargs={'user_id': user.id}))
+        else:
+            messages.error(request, 'Something went wrong. Please try again')
+
+    return render(request, 'register.html', {'form': form})
