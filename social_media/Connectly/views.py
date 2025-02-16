@@ -216,7 +216,6 @@ def logout_user(request):
     return redirect(f'http://localhost:8000/')
 
 def register_user(request):
-    # Redirect if already logged in
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
 
