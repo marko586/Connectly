@@ -1,9 +1,170 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <form method="post" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-    </form>
+<div class="position-relative vh-100 overflow-hidden">
+    <!-- Slideshow Section -->
+    <div id="slideshow" class="carousel slide vh-100 w-100 position-absolute top-0 start-0" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner h-100">
+            <div class="carousel-item active h-100">
+                <img src="https://media.istockphoto.com/id/1420486889/photo/candid-portrait-of-young-middle-eastern-digital-native.jpg?s=612x612&w=0&k=20&c=SV7ZhKg7qCeL6oYZGBaIxqfTTrQZu08kndvIKqdL_PI=" class="d-block w-100 h-100 object-cover" alt="Image 1">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://st.depositphotos.com/1064537/2318/i/450/depositphotos_23185896-stock-photo-handshake-hand-holding-on-black.jpg" class="d-block w-100 h-100 object-cover" alt="Image 2">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://tapinto-production.s3.amazonaws.com/uploads/articles/6d/best_crop_157a62c5c960be9ce43d_6d687bf0-cd02-43d8-938a-c27430ad898d.jpg?id=5484495" class="d-block w-100 h-100 object-cover" alt="Image 3">
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Form Section -->
+    <div class="position-absolute top-50 start-0 translate-middle-y p-4 bg-dark text-light shadow-lg ms-4" style="max-width: 320px; min-height: 500px; border-radius: 20px;">
+        <h2 class="text-center text-primary mb-4">Sign Up</h2>
+        <form method="POST" action="{% url 'register' %}" id="signup-form">
+            {% csrf_token %}
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control bg-dark text-light border-secondary" placeholder="Enter your username" required>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+                <label for="id_first_name" class="form-label">First Name</label>
+                <input type="text" name="first_name" id="id_first_name" class="form-control bg-dark text-light border-secondary" placeholder="Enter your first name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+                <label for="id_last_name" class="form-label">Last Name</label>
+                <input type="text" name="last_name" id="id_last_name" class="form-control bg-dark text-light border-secondary" placeholder="Enter your last name" required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="id_email" class="form-label">Email</label>
+                <input type="email" name="email" id="id_email" class="form-control bg-dark text-light border-secondary" placeholder="Enter your email address" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3 position-relative">
+                <label for="id_password1" class="form-label">Password</label>
+                <div class="position-relative">
+                    <input type="password" name="password1" id="id_password1" class="form-control bg-dark text-light border-secondary" placeholder="Enter your password" required>
+                    <button type="button" id="toggle-password1" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2">
+                        <i id="password1-icon" class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <!-- Password Strength Bar -->
+                <div class="progress mt-2" style="height: 5px;">
+                    <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <small id="feedbackText" class="form-text text-muted"></small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3 position-relative">
+                <label for="id_password2" class="form-label">Confirm Password</label>
+                <div class="position-relative">
+                    <input type="password" name="password2" id="id_password2" class="form-control bg-dark text-light border-secondary" placeholder="Confirm your password" required>
+                    <button type="button" id="toggle-password2" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2">
+                        <i id="password2-icon" class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden reCAPTCHA Token Field -->
+            <input type="hidden" id="recaptcha_token" name="recaptcha_token">
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary" id="signup-button">Sign Up</button>
+            </div>
+
+            <!-- Already have an account -->
+            <div class="text-center mt-3">
+                <a href="{% url 'login' %}" class="text-decoration-none text-primary">Already have an account? Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle Password Visibility for Password1
+    const password1Input = document.getElementById('id_password1');
+    const togglePassword1Button = document.getElementById('toggle-password1');
+    const password1Icon = document.getElementById('password1-icon');
+
+    togglePassword1Button.addEventListener('click', function () {
+        if (password1Input.type === 'password') {
+            password1Input.type = 'text';
+            password1Icon.className = 'bi bi-eye-slash';
+        } else {
+            password1Input.type = 'password';
+            password1Icon.className = 'bi bi-eye';
+        }
+    });
+
+    // Toggle Password Visibility for Password2
+    const password2Input = document.getElementById('id_password2');
+    const togglePassword2Button = document.getElementById('toggle-password2');
+    const password2Icon = document.getElementById('password2-icon');
+
+    togglePassword2Button.addEventListener('click', function () {
+        if (password2Input.type === 'password') {
+            password2Input.type = 'text';
+            password2Icon.className = 'bi bi-eye-slash';
+        } else {
+            password2Input.type = 'password';
+            password2Icon.className = 'bi bi-eye';
+        }
+    });
+
+    // Google reCAPTCHA Integration for the signup form
+    const signupForm = document.getElementById('signup-form');
+    signupForm.addEventListener('submit', async function (e) {
+        e.preventDefault();  // Prevent submission until recaptcha is resolved
+        grecaptcha.enterprise.ready(async () => {
+            const token = await grecaptcha.enterprise.execute('6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7', { action: 'SIGNUP' });
+            document.getElementById('recaptcha_token').value = token;
+            signupForm.submit();
+        });
+    });
+
+    // Password Strength Checking for password1
+    const strengthBar = document.getElementById('strengthBar');
+    const feedbackText = document.getElementById('feedbackText');
+    
+    // Load zxcvbn from CDN if not already loaded
+    if (typeof zxcvbn === 'undefined') {
+        var script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js";
+        script.onload = setupPasswordStrength;
+        document.head.appendChild(script);
+    } else {
+        setupPasswordStrength();
+    }
+    
+    function setupPasswordStrength() {
+        password1Input.addEventListener('input', function () {
+            const result = zxcvbn(password1Input.value);
+            const strength = result.score; // 0 (weak) to 4 (strong)
+            const strengthPercentage = (strength + 1) * 20;
+            strengthBar.style.width = `${strengthPercentage}%`;
+            // Reset class list and add the appropriate background color
+            strengthBar.className = 'progress-bar';
+            if (strength <= 1) {
+                strengthBar.classList.add('bg-danger');
+            } else if (strength === 2) {
+                strengthBar.classList.add('bg-warning');
+            } else {
+                strengthBar.classList.add('bg-success');
+            }
+            feedbackText.textContent = result.feedback.suggestions.join(' ') || 'Strong password!';
+        });
+    }
+});
+</script>
 {% endblock content %}

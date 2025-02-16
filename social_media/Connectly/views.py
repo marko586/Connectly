@@ -221,8 +221,6 @@ def register_user(request):
         return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
 
     initial = {}
-
-    # Check if the user is coming from Google login
     sociallogin = request.session.get('socialaccount_sociallogin')
     if sociallogin:
         extra_data = sociallogin['account']['extra_data']
@@ -231,12 +229,15 @@ def register_user(request):
             'last_name': extra_data.get('family_name', ''),
             'email': extra_data.get('email', ''),
         }
-        # ✅ Don't pre-fill username → User chooses it
 
     form = SignUpForm(request.POST or None, initial=initial)
 
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+        recaptcha_token = request.POST.get('recaptcha_token')
+        if not validate_recaptcha(recaptcha_token, "SIGNUP"):  # Validate reCAPTCHA
+            messages.error(request, 'reCAPTCHA validation failed. Please try again.')
+            return redirect('login')
         if form.is_valid():
             user = form.save()
             user.first_name = form.cleaned_data.get('first_name')
