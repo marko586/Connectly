@@ -273,3 +273,20 @@ footer a:hover {
 .follow-btn:hover {
     background: #007acc;
 }
+.form-control {
+  background-color: #374151 !important; /* Tailwind bg-gray-700 */
+  color: #ffffff !important;
+  border: none;
+}
+.form-control:focus {
+  background-color: #374151 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+/* Override card and title styling to ensure dark theme and white text */
+.card {
+  background-color: #1f2937 !important; /* Tailwind bg-gray-800 */
+}
+.card-title {
+  color: #ffffff !important;
+}

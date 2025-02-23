@@ -11,6 +11,8 @@ from google.cloud.recaptchaenterprise_v1 import Assessment
 from google.oauth2 import service_account
 from allauth.socialaccount.models import SocialAccount
 from allauth.account.utils import user_email
+from .utils import generate_otp_code, send_otp_email
+from django.contrib.auth.models import User
 
 from google.cloud import recaptchaenterprise_v1
 
@@ -103,6 +105,7 @@ def profile(request, user_id):
         audio_posts=Post.objects.filter(author_id=user_id,media_file__iregex=r'\.(mp3|wav|ogg)$').order_by('-created')
         audio_combined=zip(audio_posts,posts)
         liked_posts=Post.objects.filter(likes__id=profile.user_id)
+        user=User.objects.get(id=user_id)
         context = {
             'num_posts': num_posts,
             'profile': profile,
@@ -113,6 +116,7 @@ def profile(request, user_id):
             'audio_posts': audio_posts,
             'audio_combined': audio_combined,
             'liked_posts': liked_posts,
+            'user': user,
         }
         if request.user.profile.user_id == profile.user_id:
             if request.path.endswith(f'/{request.user.id}/'):
@@ -189,39 +193,49 @@ def post_create(request):
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
 def login_user(request):
-    if not request.user.is_authenticated:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            recaptcha_token = request.POST.get('recaptcha_token')
-            if not validate_recaptcha(recaptcha_token, "LOGIN"):  # Validate reCAPTCHA
-                messages.error(request, 'reCAPTCHA validation failed. Please try again.')
-                return redirect('login')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, 'You have been logged in!')
-                return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
-            else:
-                messages.success(request, 'Something went wrong please try again')
-                return redirect('login')
-        else:
-            return render(request,'login.html')
-    else:
+    # If user is already logged in, redirect them
+    if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        recaptcha_token = request.POST.get('recaptcha_token')
+
+        if not validate_recaptcha(recaptcha_token, "LOGIN"):
+            messages.error(request, 'reCAPTCHA validation failed. Please try again.')
+            return redirect('login')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            code = generate_otp_code()
+            send_otp_email(user.email, code)
+
+            # 3) Temporarily store the user ID and the code in session
+            request.session['tmp_user_id'] = user.id
+            request.session['otp_code'] = code
+
+            messages.info(request, 'An OTP has been sent to your email. Please verify.')
+            # 4) Redirect to OTP verification page
+            return redirect('verify_otp')
+        else:
+            messages.error(request, 'Invalid credentials. Please try again.')
+            return redirect('login')
+
+    # If GET request, show the login form
+    return render(request, 'login.html')
+
 
 def logout_user(request):
     logout(request)
     messages.success(request, 'You have been logged out')
-    return redirect(f'http://localhost:8000/')
+    return redirect('welcome')
 
 def register_user(request):
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
 
     initial = {}
-
-    # Check if the user is coming from Google login
     sociallogin = request.session.get('socialaccount_sociallogin')
     if sociallogin:
         extra_data = sociallogin['account']['extra_data']
@@ -230,25 +244,57 @@ def register_user(request):
             'last_name': extra_data.get('family_name', ''),
             'email': extra_data.get('email', ''),
         }
-        # ✅ Don't pre-fill username → User chooses it
 
     form = SignUpForm(request.POST or None, initial=initial)
 
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             user.first_name = form.cleaned_data.get('first_name')
             user.last_name = form.cleaned_data.get('last_name')
+            user.is_active = False
             user.save()
+            otp_code = generate_otp_code()
+            send_otp_email(user.email, otp_code)
+            request.session['tmp_user_id'] = user.id
+            request.session['otp_code'] = otp_code
 
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, 'Your account has been created!')
-            return redirect(reverse('profile', kwargs={'user_id': user.id}))
+            messages.info(request, 'A verification code has been sent to your email. Please enter it to activate your account.')
+            return redirect('verify_otp')
         else:
-            messages.error(request, 'Something went wrong. Please try again')
+            messages.error(request, 'Something went wrong. Please try again.')
 
     return render(request, 'register.html', {'form': form})
+
+
+def verify_otp(request):
+    if request.method == 'POST':
+        user_entered_code = request.POST.get('otp_code')
+        session_code = request.session.get('otp_code')
+        tmp_user_id = request.session.get('tmp_user_id')
+
+        if user_entered_code == session_code and tmp_user_id:
+            try:
+                user = User.objects.get(id=tmp_user_id)
+                user.is_active = True
+                user.save()
+                if user.email and user.socialaccount_set.exists():
+                    backend = 'allauth.account.auth_backends.AuthenticationBackend'
+                else:
+                    backend = 'django.contrib.auth.backends.ModelBackend'
+                login(request, user, backend=backend)
+                del request.session['otp_code']
+                del request.session['tmp_user_id']
+
+                messages.success(request, 'you were successfully authenticated')
+                return redirect(reverse('profile', kwargs={'user_id': user.id}))
+
+            except User.DoesNotExist:
+                messages.error(request, 'User does not exist. Please try again.')
+                return redirect('register')
+
+        else:
+            messages.error(request, 'Invalid OTP code. Please try again.')
+            return redirect('verify_otp')
+
+    return render(request, 'verify_otp.html')

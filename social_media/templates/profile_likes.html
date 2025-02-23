@@ -34,6 +34,8 @@
             <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg" alt="Profile Picture">
             <div class="profile-info">
             <h1>@{{ profile.user }}</h1>
+            <p>{{ user.last_name.capitalize }} {{ user.first_name.capitalize }}</p>
+            <p>Web Developer | Content Creator</p>
                 <form method="post">
                 {% csrf_token %}
                 {% if profile in user.profile.follows.all %}

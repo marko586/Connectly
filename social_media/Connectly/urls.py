@@ -1,5 +1,5 @@
 from django.urls import path, include
-from Connectly.views import welcome, profile, follows, followed,home,post_create, login_user, logout_user, register_user
+from Connectly.views import welcome, profile, follows, followed,home,post_create, login_user, logout_user, register_user, verify_otp
 
 urlpatterns=[
     path('', welcome ,name='welcome'),
@@ -14,4 +14,5 @@ urlpatterns=[
     path('logout/', logout_user, name='logout'),
     path('register/', register_user, name='register'),
     path('social-signup/', register_user, name='socialaccount_signup'),
+    path('verify_otp/', verify_otp, name='verify_otp'),
 ]
