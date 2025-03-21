@@ -48,17 +48,14 @@
     <!-- Contact Section -->
     <div class="section" id="contact">
         <h2>Contact Us</h2>
-        <form class="contact-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" rows="5" required></textarea>
+        <form class="contact-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input name="subject" placeholder="Subject" required>
+            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
             <button type="submit">Send Message</button>
         </form>
     </div>
-
-    <!-- Footer -->
-    <!-- <footer>
-        <p>&copy; 2024 Connectly. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-    </footer> -->
     <script src="{% static 'js/welcome_page.js' %}"></script>
 {% endblock content %}

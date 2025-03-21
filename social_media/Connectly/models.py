@@ -19,8 +19,10 @@ def validate_media_file(value):    #checks the type of a file(only images,videos
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  #every user has one profile
-    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)   #relation between profiles
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
+    profile_picture = models.ImageField(upload_to=upload_location, null=True, blank=True)
+    bio = models.CharField(max_length=200, null=True, blank=True)
     def __str__(self):
         return self.user.username
 def create_profile(sender,instance,created,**kwargs):   #signals, if a user is created a profile is too
@@ -29,11 +31,13 @@ def create_profile(sender,instance,created,**kwargs):   #signals, if a user is c
         user_profile.save()
 post_save.connect(create_profile, sender=User)
 class Post(models.Model):
-    likes = models.ManyToManyField(Profile, related_name='liked', symmetrical=False, blank=True)   #many posts can have many likes
-    media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file], blank=False, null=True)  #the file upload
-    author = models.ForeignKey(User,related_name='posts', on_delete=models.DO_NOTHING)  #post author
-    body = models.CharField(max_length=200)   #desc
-    created = models.DateTimeField(auto_now_add=True)    #timestamp
+    likes = models.ManyToManyField(Profile, related_name='liked', symmetrical=False, blank=True)
+    media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file], blank=False, null=True)
+    author = models.ForeignKey(User,related_name='posts', on_delete=models.DO_NOTHING)
+    body = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    def num_likes(self):
+        return self.likes.count()
     def __str__(self):
         return (f"{self.author}'s post "
                 f"{self.body} "
@@ -46,3 +50,11 @@ class Post(models.Model):
             return 'video'
         elif file_extension in ['mp3', 'wav', 'ogg']:
             return 'audio'
+        def get_absolute_url(self):
+            return self.id
+
+class Comment(models.Model):
+    author = models.ForeignKey(Profile,related_name='comments', on_delete=models.CASCADE)
+    post= models.ForeignKey(Post,related_name='comments', on_delete=models.CASCADE)
+    body = models.CharField(max_length=250)
+    created = models.DateTimeField(auto_now_add=True)

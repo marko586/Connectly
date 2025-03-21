@@ -6,13 +6,9 @@
             <i class="bi bi-house-door-fill icon"></i>
             <span>Home</span>
         </a>
-        <a href="#" class="icon-link">
+        <a href="{% url "search" %}" class="icon-link">
             <i class="bi bi-search icon"></i>
             <span>Search</span>
-        </a>
-        <a href="#" class="icon-link">
-            <i class="bi bi-bell icon"></i>
-            <span>Notifications</span>
         </a>
         <a href="{% url 'profile' user.profile.user_id %}" class="icon-link">
             <i class="bi bi-person-circle icon"></i>
@@ -31,11 +27,11 @@
     <!-- Profile Section -->
     <div class="profile-section">
         <div class="profile-header">
-            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg" alt="Profile Picture">
+            <img src="{% if profile.profile_picture %}{{ profile.profile_picture }}{% else %}https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg{% endif %}" alt="Profile Picture">
             <div class="profile-info">
             <h1>@{{ profile.user }}</h1>
             <p>{{ user.last_name.capitalize }} {{ user.first_name.capitalize }}</p>
-            <p>Web Developer | Content Creator</p>
+            <p>{{ profile.bio | default:"No bio yet" }}</p>
                 <form method="post">
                 {% csrf_token %}
                 {% if profile in user.profile.follows.all %}
@@ -92,7 +88,7 @@
                     {% endif %}
                     
                     <div class="post-overlay">
-                        <a href="#">View Post</a>
+                        <a href="{% url 'post_detail' media_post.id %}">View Post</a>
                     </div>
                 
                 </div>

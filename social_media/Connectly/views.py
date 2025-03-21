@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
 from django.urls import reverse
-from Connectly.models import Profile, Post
-from Connectly.forms import PostForm, SignUpForm
+from Connectly.models import Profile, Post, Comment
+from Connectly.forms import PostForm, SignUpForm, ProfileEditForm, UserEditForm, CommentForm
 from django.contrib.auth import authenticate, login, logout
 from google.cloud import recaptchaenterprise_v1
 from google.cloud.recaptchaenterprise_v1 import Assessment
@@ -13,7 +13,7 @@ from allauth.socialaccount.models import SocialAccount
 from allauth.account.utils import user_email
 from .utils import generate_otp_code, send_otp_email
 from django.contrib.auth.models import User
-
+from django.core.mail import send_mail
 from google.cloud import recaptchaenterprise_v1
 
 def create_assessment(
@@ -75,6 +75,7 @@ def validate_recaptcha(token, recaptcha_action):        #google recaptcha
     if assessment is None:
         return False
 
+    # Check the risk score (e.g., allow only if the score is >= 0.5)
     score = assessment.risk_analysis.score
     print(f"reCAPTCHA risk score for action '{recaptcha_action}': {score}")
     return score >= 0.5
@@ -88,6 +89,13 @@ def welcome(request):           #page for non logged in users
         instance = get_object_or_404(Profile, user=request.user)
         return redirect(f'profile/{instance.user_id}')
     else:
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            name = request.POST.get('name')
+            subject = request.POST.get('subject')
+            message = request.POST.get('message')
+            send_mail(f'{name}, ' + subject, message, email, ['markosysak@gmail.com'])
+            messages.success(request, f"Thanks for contacting us {name} we'll reply shortly")
         return render(request,'welcome_page.html', context)
 
 def profile(request, user_id):        #profile page
@@ -137,16 +145,17 @@ def profile(request, user_id):        #profile page
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def follows(request, id):  #follows page
+  #follows page
+def follows(request, user_id):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user_id=id)
+        profile = Profile.objects.get(user_id=user_id)
         return render(request, 'follows.html', {'profile': profile})
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def followed(request, id):          #followed page
+def followed(request, user_id):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user_id=id)
+        profile = Profile.objects.get(user_id=user_id)
         return render(request, 'following.html', {'profile': profile})
     else:
         messages.success(request, 'You are not logged in')
@@ -193,7 +202,7 @@ def login_user(request):        #login page
         return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
 
     if request.method == 'POST':
-        username = request.POST['username']
+        username_or_email = request.POST['username']
         password = request.POST['password']
         recaptcha_token = request.POST.get('recaptcha_token')
 
@@ -201,7 +210,16 @@ def login_user(request):        #login page
             messages.error(request, 'reCAPTCHA validation failed. Please try again.')
             return redirect('login')
 
-        user = authenticate(request, username=username, password=password)
+        user = None
+        if "@" in username_or_email:
+            try:
+                user_obj = User.objects.get(email=username_or_email)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                user = None
+        else:
+            user = authenticate(request, username=username_or_email, password=password)
+
         if user is not None:
             code = generate_otp_code()
             send_otp_email(user.email, code)
@@ -289,3 +307,70 @@ def verify_otp(request):      #OTP verification
             return redirect('verify_otp')
 
     return render(request, 'verify_otp.html')
+
+def update_profile(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        current_profile= Profile.objects.get(user_id=current_user)
+
+        user_form = UserEditForm(request.POST or None, request.FILES or None, instance=current_user)
+        add_form = ProfileEditForm(request.POST or None, request.FILES or None, instance=current_profile)
+        if user_form.is_valid() and add_form.is_valid():
+            user_form.save()
+            add_form.save()
+            messages.success(request, 'Your profile has been updated')
+            return redirect('home')
+        else:
+            user_form = UserEditForm(request.POST or None, request.FILES or None,instance=current_user)
+            add_form = ProfileEditForm(request.POST or None, request.FILES or None,instance=current_profile)
+
+        return render(request, 'profile_update.html', {'user_form': user_form, 'add_form': add_form})
+    else:
+        messages.success(request,'You are not logged in')
+        return redirect('welcome')
+def post_detail(request, id):
+    if request.user.is_authenticated:
+        instance = get_object_or_404(Post, id=id)
+        comments= Comment.objects.filter(post=instance)
+        form= CommentForm(request.POST or None)
+        if request.method == 'POST':
+            action = request.POST.get('follow')
+            action_post = request.POST.get('like')
+            action_delete = request.POST.get('delete')
+
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = request.user.profile
+                comment.post=instance
+                comment.save()
+            if action:
+                if action == 'unfollow':
+                    request.user.profile.follows.remove(instance.author.profile)
+                elif action == 'follow':
+                    request.user.profile.follows.add(instance.author.profile)
+            if action_post:
+                if action_post == 'like':
+                    instance.likes.add(request.user.profile)
+                elif action_post == 'unlike':
+                    instance.likes.remove(request.user.profile)
+            if action_delete:
+                instance.delete()
+                messages.success(request, 'Your post has been deleted')
+                return redirect('home')
+            request.user.save()
+        return render(request, 'post_detail.html',{'instance':instance,'comments':comments,'form':form})
+    else:
+        messages.error(request, 'You are not logged in')
+        return redirect('home')
+
+def search(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            search = request.POST.get('q')
+            searched = User.objects.filter(username__icontains=search)
+            return render(request, 'search.html',{'searched':searched})
+        else:
+            return render(request, 'search.html')
+    else:
+        messages.success(request, 'You are not logged in')
+        return redirect('welcome')

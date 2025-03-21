@@ -37,10 +37,11 @@
         <div class="bg-gray-800 rounded-lg shadow-md p-6 w-full max-w-4xl">
             <!-- User Info -->
             <div class="flex items-center mb-4">
-                <img src="{{ post.user.profile_image.url }}" alt="User Profile" 
-                     class="w-12 h-12 rounded-full border-2 border-gray-700 object-cover">
+                <img src="{% if post.author.profile.profile_picture %}{{ post.author.profile.profile_picture.url }}{% else %}https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg{% endif %}" 
+     alt="Profile Picture" 
+     class="w-24 h-24 rounded-full object-cover">
                 <div class="ml-4 flex-grow">
-                    <a href="{% url 'profile' post.author.id %}">
+                    <a href="{% url 'profile' post.author.profile.user_id %}">
                         <h3 class="text-lg font-semibold text-blue-400">@{{ post.author.username }}</h3>
                     </a>
                     <p class="text-sm text-gray-400">{{ post.created|date:"j F, Y, H:i a" }}</p>
@@ -96,18 +97,18 @@
 
                     {% if user.profile in post.likes.all %}
                     <button type="submit" name="like" value="unlike" class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                        <i class="bi bi-heart-fill"></i>{{ count_likes }}
+                        <i class="bi bi-heart-fill"></i>{{ post.num_likes }}
                     </button>
                     {% else %}
                         <button type="submit" name="like" value="like" class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                            <i class="bi bi-heart"></i> {{ count_likes }}
+                            <i class="bi bi-heart"></i> {{ post.num_likes }}
                         </button>
                     {% endif %}
                 </form>
 
             {% endif %}
                 <button class="flex items-center text-gray-400 hover:text-blue-400 transition">
-                    <i class="bi bi-chat mr-2"></i> Comment
+                    <a href="{% url 'post_detail' post.id %}"><i class="bi bi-chat mr-2"></i> Comment</a>
                 </button>
             </div>
         </div>
