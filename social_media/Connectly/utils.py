@@ -1,3 +1,4 @@
+#розсилка OTP
 import random
 import smtplib
 from django.core.mail import send_mail

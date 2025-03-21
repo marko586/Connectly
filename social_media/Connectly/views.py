@@ -18,7 +18,7 @@ from google.cloud import recaptchaenterprise_v1
 
 def create_assessment(
         project_id: str, recaptcha_key: str, token: str, recaptcha_action: str
-):
+):    #google recaptcha
     client = recaptchaenterprise_v1.RecaptchaEnterpriseServiceClient()
 
     event = recaptchaenterprise_v1.Event()
@@ -67,24 +67,20 @@ def create_assessment(
         print(f"Assessment name: {assessment_name}")
     return response
 
-def validate_recaptcha(token, recaptcha_action):
-    # Replace these with your actual Google Cloud configuration
-    project_id = "my-project-81083-1738152303405"  # Your actual Google Cloud Project ID
-    recaptcha_key = "6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7"  # Your actual reCAPTCHA Site Key
-
-    # Call create_assessment to validate the token
+def validate_recaptcha(token, recaptcha_action):        #google recaptcha
+    project_id = "my-project-81083-1738152303405"
+    recaptcha_key = "6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7"
     assessment = create_assessment(project_id, recaptcha_key, token, recaptcha_action)
 
     if assessment is None:
         return False
 
-    # Check the risk score (e.g., allow only if the score is >= 0.5)
     score = assessment.risk_analysis.score
     print(f"reCAPTCHA risk score for action '{recaptcha_action}': {score}")
-    return score >= 0.5  # Adjust the threshold as needed
+    return score >= 0.5
 
 
-def welcome(request):
+def welcome(request):           #page for non logged in users
     context = {
         'title': 'Connectly',
     }
@@ -94,7 +90,7 @@ def welcome(request):
     else:
         return render(request,'welcome_page.html', context)
 
-def profile(request, user_id):
+def profile(request, user_id):        #profile page
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=user_id)
         follows=len(profile.follows.all())
@@ -141,21 +137,21 @@ def profile(request, user_id):
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def follows(request, id):
+def follows(request, id):  #follows page
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=id)
         return render(request, 'follows.html', {'profile': profile})
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def followed(request, id):
+def followed(request, id):          #followed page
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=id)
         return render(request, 'following.html', {'profile': profile})
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def home(request):
+def home(request):              #main page where the posts r displayed
     if request.user.is_authenticated:
         posts=Post.objects.all().order_by('-created')
         if request.method == 'POST':
@@ -179,7 +175,7 @@ def home(request):
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def post_create(request):
+def post_create(request):           #post creation form
     if request.user.is_authenticated:
         form = PostForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -192,8 +188,7 @@ def post_create(request):
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def login_user(request):
-    # If user is already logged in, redirect them
+def login_user(request):        #login page
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
 
@@ -210,28 +205,24 @@ def login_user(request):
         if user is not None:
             code = generate_otp_code()
             send_otp_email(user.email, code)
-
-            # 3) Temporarily store the user ID and the code in session
             request.session['tmp_user_id'] = user.id
             request.session['otp_code'] = code
 
             messages.info(request, 'An OTP has been sent to your email. Please verify.')
-            # 4) Redirect to OTP verification page
             return redirect('verify_otp')
         else:
             messages.error(request, 'Invalid credentials. Please try again.')
             return redirect('login')
 
-    # If GET request, show the login form
     return render(request, 'login.html')
 
 
-def logout_user(request):
+def logout_user(request):    #logut func
     logout(request)
     messages.success(request, 'You have been logged out')
     return redirect('welcome')
 
-def register_user(request):
+def register_user(request):             #registration form
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
 
@@ -267,7 +258,7 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
 
 
-def verify_otp(request):
+def verify_otp(request):      #OTP verification
     if request.method == 'POST':
         user_entered_code = request.POST.get('otp_code')
         session_code = request.session.get('otp_code')

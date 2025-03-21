@@ -56,13 +56,12 @@
 
             <!-- Forgot Password -->
             <div class="text-center mt-3">
-                <a href="{% url 'register' %}" class="text-decoration-none text-primary">Sign up</a>
+                <a href="{% url 'register' %}" class="text-decoration-none text-primary">Sign up</a> | <a href="{% url 'reset_password' %}">Forgot password</a>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Add JavaScript -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Toggle Password Visibility
