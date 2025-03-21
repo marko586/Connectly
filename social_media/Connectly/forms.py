@@ -1,7 +1,9 @@
 from django import forms
-from Connectly.models import Post
+from Connectly.models import Post, Profile, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+
+
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -45,3 +47,46 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
         self.fields['password2'].label = ''
         self.fields['password2'].help_text=''
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'First Name'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Last Name'
+            }),
+        }
+
+class ProfileEditForm(forms.ModelForm):
+    profile_picture = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control'})
+    )
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Tell us about yourself...',
+            'rows': 5
+        })
+    )
+    class Meta:
+        model = Profile
+        fields = ('profile_picture', 'bio')
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+        widgets = {
+            'body': forms.TextInput(attrs={
+                'class': 'form-control form-control-sm bg-secondary text-white',
+                'placeholder': 'Add a comment...',
+                'aria-label': 'Add a comment'
+            }),
+        }

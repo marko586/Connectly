@@ -1,5 +1,138 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    
+  <div class="overlay"></div>
+
+  <!-- X Button in the top right corner -->
+  <a href="{% url 'home' %}">
+    <button type="button" class="btn-close btn-close-white position-fixed" style="top: 20px; right: 20px; z-index: 1100;" aria-label="Close"></button>
+  </a>
+
+  <div class="container my-5 content">
+    <div class="row justify-content-center">
+      <!-- Left Column: Post Details -->
+      <div class="col-lg-7 col-md-8 mb-4 mb-md-0">
+        <div class="card shadow-sm">
+          <!-- User Info Above Image -->
+          <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
+            <span class="fw-bold">{{ instance.author }}</span>
+            <form method="post">
+              {% csrf_token %}
+              {% if user.profile in instance.author.profile.followed_by.all %}
+                <button type="submit" name="follow" value="unfollow" class="text-sm px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700">
+                  Unfollow
+                </button>
+              {% else %}
+                <button type="submit" name="follow" value="follow" class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+              {% endif %}
+            </form>
+          </div>
+          <!-- Post Media -->
+          {% if instance.get_media_type == "image" %}
+            <div class="ratio ratio-4x3 rounded overflow-hidden mb-3 w-full">
+              <img src="{{ instance.media_file.url }}" alt="Uploaded Image" class="object-contain w-100 h-100">
+            </div>
+          {% elif instance.get_media_type == "video" %}
+            <div class="ratio ratio-4x3 rounded overflow-hidden mb-3 w-full">
+              <video controls class="object-contain w-100 h-100">
+                <source src="{{ instance.media_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          {% elif instance.get_media_type == "audio" %}
+            <audio controls class="w-full mb-4">
+              <source src="{{ instance.media_file.url }}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          {% endif %}
+          <!-- Post Details & Actions -->
+          <div class="card-body bg-dark text-white">
+            <p class="card-text">{{ instance.body }}</p>
+            <div class="d-flex align-items-center mt-3">
+              {% if instance.author.profile.user_id == user.profile.user_id %}
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    delete post<i class="bi bi-trash3"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-dark" id="staticBackdropLabel">Warning!</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-dark">
+        You are about to delete this post
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="delete" value="delete" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+              {% else %}    
+                <form method="POST">
+                  {% csrf_token %}
+                  {% if user.profile in instance.likes.all %}
+                    <button type="submit" name="like" value="unlike" class="btn btn-outline-light me-3">
+                      <i class="bi bi-heart-fill"></i> Unlike {{ instance.num_likes }}
+                    </button>
+                  {% else %}
+                    <button type="submit" name="like" value="like" class="btn btn-outline-light me-3">
+                      <i class="bi bi-heart-fill"></i> Like {{ instance.num_likes }}
+                    </button>
+                  {% endif %}
+                </form>
+              {% endif %}
+              <button type="button" class="btn btn-outline-light">
+                <i class="bi bi-share-fill"></i> Share
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right Column: Comments Section -->
+      <div class="col-lg-5 col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Comments</h5>
+          </div>
+          <!-- Scrollable Comments List -->
+          <div class="card-body bg-dark text-white overflow-auto" style="max-height: 500px;">
+            {% if comments %}
+              {% for comment in comments %}
+                <div class="d-flex mb-3">
+                  <img src="{{ comment.author.profile_picture.url }}" alt="User Avatar" class="rounded-circle me-3" style="width:50px; height:50px;">
+                  <div>
+                    <a href="{% url 'profile' comment.author.user_id %}"><h6 class="mb-1">{{ comment.author }}</h6></a>
+                    <p class="mb-0">{{ comment.body }}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <h3>No comments yet</h3>
+            {% endif %}
+          </div>
+          <!-- Comment Input Section (placed outside scrollable area) -->
+          <div class="card-footer bg-dark">
+            <form method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                {{ form.as_p }}
+                <button class="btn btn-primary" type="submit">
+                  <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
