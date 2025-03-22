@@ -180,6 +180,4 @@ EMAIL_HOST_PASSWORD = 'etuf awbo njdo hwjs'
 
 
 
-# Load the path to your Google credentials from an env variable
-GOOGLE_APPLICATION_CREDENTIALS = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
+
