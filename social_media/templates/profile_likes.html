@@ -66,9 +66,9 @@
 
         <!-- Navbar Section -->
         <div class="navbar-custom">
-            <a href="{% url 'profile' profile.user_id %}" class="active">Posts<i class="bi bi-chat"></i></a>
+            <a href="{% url 'profile' profile.user_id %}">Posts<i class="bi bi-chat"></i></a>
             <a href="{% url 'audios' profile.user_id %}">Audios<i class="bi bi-music-note-beamed"></i></a>
-            <a href="{% url 'likes' profile.user_id %}">Likes<i class="bi bi-heart"></i></a>
+            <a href="{% url 'likes' profile.user_id %}" class="active">Likes<i class="bi bi-heart"></i></a>
         </div>
 
         <!-- Posts Section -->
@@ -88,7 +88,7 @@
                     {% endif %}
                     
                     <div class="post-overlay">
-                        <a href="{% url 'post_detail' liked_post %}">View Post</a>
+                        <a href="{% url 'post_detail' liked_post.id %}">View Post</a>
                     </div>
                 
                 </div>

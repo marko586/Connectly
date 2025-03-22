@@ -15,6 +15,7 @@ from .utils import generate_otp_code, send_otp_email
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from google.cloud import recaptchaenterprise_v1
+from django.db.models import Q
 
 def create_assessment(
         project_id: str, recaptcha_key: str, token: str, recaptcha_action: str
@@ -142,6 +143,8 @@ def profile(request, user_id):        #profile page
                 return render(request, 'profile.html', context)
             elif request.path.endswith(f'/{profile.user_id}/audios/'):
                 return render(request, 'profile_audios.html', context)
+            elif request.path.endswith(f'/{profile.user_id}/likes/'):
+                return render(request, 'profile_likes.html', context)
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
@@ -365,9 +368,9 @@ def post_detail(request, id):
 
 def search(request):
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            search = request.POST.get('q')
-            searched = User.objects.filter(username__icontains=search)
+        query = request.GET.get('q')
+        if query:
+            searched = User.objects.filter(Q(username__icontains=query))
             return render(request, 'search.html',{'searched':searched})
         else:
             return render(request, 'search.html')
