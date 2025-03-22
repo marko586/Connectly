@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#@&1r1x4j^=al=d_=)6u^dor$3qh5p4qva-r)#p(e$7_%yp)13'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['connectly-ck8v.onrender.com']
+ALLOWED_HOSTS = ['localhost','connectly-ck8v.onrender.com']
 
 
 # Application definition
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -178,6 +180,11 @@ EMAIL_HOST_USER = 'markosysak@gmail.com'
 EMAIL_HOST_PASSWORD = 'etuf awbo njdo hwjs'
 
 
+if not DEBUG:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = BASE_DIR / 'static_cdn'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media_cdn'
 
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
