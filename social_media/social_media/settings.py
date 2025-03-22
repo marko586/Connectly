@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#@&1r1x4j^=al=d_=)6u^dor$3qh5p4qva-r)#p(e$7_%yp)13'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost','connectly-ck8v.onrender.com', 'connectly.life']
+ALLOWED_HOSTS = ['localhost','connectly-ck8v.onrender.com', 'connectly.life', '127.0.0.1']
 
 
 # Application definition
@@ -85,15 +85,12 @@ WSGI_APPLICATION = 'social_media.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
 
 
 # Password validation
