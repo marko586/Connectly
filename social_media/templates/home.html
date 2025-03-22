@@ -40,13 +40,13 @@
                     <a href="{% url 'profile' post.author.profile.user_id %}">
                         <h3 class="text-lg font-semibold text-blue-400">@{{ post.author.username }}</h3>
                     </a>
-                    <p class="text-sm text-gray-400">{{ post.created|date:"j F, Y, H:i a" }}</p>
+                    <p class="text-sm text-gray-400">{{ post.created|date:"j F, Y, H:i" }}</p>
                 </div>
                 {% if post.author.profile.user_id != user.profile.user_id %}
                 <div class="ml-4">
                     <form method="POST">
                         {% csrf_token %}
-                        <input type="hidden" name="target_user_id" value="{{ post.author.profile.user_id }}">
+                        <input type="hidden" name="target_user_id" value="{{ post.author.profile.user_id}}">
                         {% if user.profile in post.author.profile.followed_by.all %}
                         <button type="submit" name="follow" value="unfollow" class="text-sm px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700">
                             Unfollow
