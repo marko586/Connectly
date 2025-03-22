@@ -43,20 +43,20 @@
                 <p>Posts</p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">
+                <a href="{% url 'followed' profile.user_id %}" class="link">
                     {{ followed_by }}
                 </a>
                 <p>
-                    <a href="http://localhost:8000/profile/{{ profile.user_id }}/followed/" class="link">
+                    <a href="{% url 'followed' profile.user_id %}" class="link">
                         followers
                     </a>
                 </p>
             </div>
             <div class="stat">
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/" class="link">
+                <a href="{% url 'follows' profile.user_id  %}" class="link">
                     {{ follows }}
                 </a>
-                <a href="http://localhost:8000/profile/{{ profile.user_id }}/follows/">
+                <a href="{% url 'follows' profile.user_id %}">
                     <p>Following</p>
                 </a>
             </div>
