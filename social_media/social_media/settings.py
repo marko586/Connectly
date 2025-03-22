@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#@&1r1x4j^=al=d_=)6u^dor$3qh5p4qva-r)#p(e$7_%yp)13
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['connectly.onrender.com']
+ALLOWED_HOSTS = ['connectly-ck8v.onrender.com']
 
 
 # Application definition
