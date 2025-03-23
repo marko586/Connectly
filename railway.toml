@@ -1,0 +1,8 @@
+[build]
+base = "social_media"
+buildCommand = "pip install -r requirements.txt"
+startCommand = "gunicorn social_media.wsgi:application"
+
+[deploy]
+numReplicas = 1
+healthcheckPath = "/"
