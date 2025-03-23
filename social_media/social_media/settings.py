@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from dotenv import load_dotenv
 
+
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#@&1r1x4j^=al=d_=)6u^dor$3qh5p4qva-r)#p(e$7_%yp)13'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','connectly-ck8v.onrender.com', 'connectly.life', '127.0.0.1']
 
@@ -85,9 +88,14 @@ WSGI_APPLICATION = 'social_media.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'turntable.proxy.rlwy.net',
+        'PORT': '47486',
     }
 }
 
@@ -182,11 +190,6 @@ EMAIL_HOST_USER = 'markosysak@gmail.com'
 EMAIL_HOST_PASSWORD = 'etuf awbo njdo hwjs'
 
 
-if not DEBUG:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = BASE_DIR / 'static_cdn'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media_cdn'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
