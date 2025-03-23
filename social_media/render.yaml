@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: connectly
-    env: python
-    buildCommand: ""
-    startCommand: gunicorn social_media.wsgi:application
-    envVars:
-      - key: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/secrets/key.json

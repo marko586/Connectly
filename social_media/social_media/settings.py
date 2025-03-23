@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-#@&1r1x4j^=al=d_=)6u^dor$3qh5p4qva-r)#p(e$7_%yp)13
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','connectly-ck8v.onrender.com', 'connectly.life', '127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = []
 
 # Application definition
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'whitenoise.runserver_nostatic',
 ]
 
 
@@ -145,7 +146,9 @@ STATICFILES_DIRS = [
 
 ]
 
-STATIC_ROOT = BASE_DIR / 'static_cdn'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 MEDIA_ROOT = BASE_DIR / 'media_cdn'
