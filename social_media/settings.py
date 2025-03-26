@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import dj_database_url
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,13 +45,15 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,7 +94,7 @@ DATABASES = {
     }
 }
 
-
+DATABASES['default']=dj_database_url.parse("postgresql://connectly_db_lp37_user:4Pih8N1JBFUoznts61bbTfsdZj0ZdDCB@dpg-cvfjsaogph6c73bdfqi0-a.frankfurt-postgres.render.com/connectly_db_lp37")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -139,8 +142,14 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / 'static_cdn'
 
-
-MEDIA_ROOT = BASE_DIR / 'media_cdn'
+if DEBUG:
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+    'CLOUDINARY_URL': 'CLOUDINARY_URL'
+    }
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -182,11 +191,5 @@ EMAIL_HOST_USER = 'markosysak@gmail.com'
 EMAIL_HOST_PASSWORD = 'etuf awbo njdo hwjs'
 
 
-if not DEBUG:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = BASE_DIR / 'static_cdn'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media_cdn'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
