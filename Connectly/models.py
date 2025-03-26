@@ -22,7 +22,7 @@ def validate_media_file(value):    #checks the type of a file(only images,videos
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
-    profile_picture = models.ImageField(upload_to=upload_location, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to=upload_location,storage=RawMediaCloudinaryStorage() , null=True, blank=True)
     bio = models.CharField(max_length=200, null=True, blank=True)
     def __str__(self):
         return self.user.username

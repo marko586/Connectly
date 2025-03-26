@@ -50,6 +50,7 @@
         <h2>Contact Us</h2>
         <form class="contact-form" method="post">
             {% csrf_token %}
+            <input type="hidden" id="recaptcha_token" name="recaptcha_token">
             <input type="text" name="name" placeholder="Your Name" required>
             <input type="email" name="email" placeholder="Your Email" required>
             <input name="subject" placeholder="Subject" required>
@@ -58,4 +59,20 @@
         </form>
     </div>
     <script src="{% static 'js/welcome_page.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault(); // Prevent form submission until reCAPTCHA is resolved
+
+        grecaptcha.enterprise.ready(async () => {
+            const token = await grecaptcha.enterprise.execute('6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7', { action: 'LOGIN' });
+            document.getElementById('recaptcha_token').value = token;
+            // Now submit the form after setting the token
+            loginForm.submit();
+        });
+    });
+});
+</script>
+
 {% endblock content %}

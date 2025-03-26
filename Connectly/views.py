@@ -91,12 +91,18 @@ def welcome(request):           #page for non logged in users
         return redirect(f'profile/{instance.user_id}')
     else:
         if request.method == 'POST':
-            email = request.POST.get('email')
-            name = request.POST.get('name')
-            subject = request.POST.get('subject')
-            message = request.POST.get('message')
-            send_mail(f'{name}, ' + subject, message, email, ['markosysak@gmail.com'])
-            messages.success(request, f"Thanks for contacting us {name} we'll reply shortly")
+            recaptcha_token = request.POST.get('recaptcha_token')
+
+            if not validate_recaptcha(recaptcha_token, "LOGIN"):
+                messages.error(request, 'reCAPTCHA validation failed. Please try again.')
+                return redirect('login')
+            else:
+                email = request.POST.get('email')
+                name = request.POST.get('name')
+                subject = request.POST.get('subject')
+                message = request.POST.get('message')
+                send_mail(f'{name}, ' + subject, message, email, ['markosysak@gmail.com'])
+                messages.success(request, f"Thanks for contacting us {name} we'll reply shortly")
         return render(request,'welcome_page.html', context)
 
 def profile(request, user_id):        #profile page
@@ -350,6 +356,8 @@ def post_detail(request, id):
                 comment.author = request.user.profile
                 comment.post=instance
                 comment.save()
+                form.clean()
+                return redirect('post_detail', id)
             if action:
                 if action == 'unfollow':
                     request.user.profile.follows.remove(instance.author.profile)
