@@ -145,7 +145,7 @@ STATIC_ROOT = BASE_DIR / 'static_cdn'
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE = {
-'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+'CLOUDINARY_URL': 'cloudinary://775396613481496:vUrf-g-hPlBQYXdwW53W2wShEFE@dihpawjiv'
 }
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
