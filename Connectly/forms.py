@@ -2,8 +2,7 @@ from django import forms
 from Connectly.models import Post, Profile, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-
-
+from django.core.exceptions import ValidationError
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -47,6 +46,11 @@ class SignUpForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
         self.fields['password2'].label = ''
         self.fields['password2'].help_text=''
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("This email address is already registered. Please use a different one.")
+        return email
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
