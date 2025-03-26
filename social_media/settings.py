@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
-
+import cloudinary_storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -143,13 +143,14 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'static_cdn'
 
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 CLOUDINARY_STORAGE = {
 'CLOUDINARY_URL': 'cloudinary://775396613481496:vUrf-g-hPlBQYXdwW53W2wShEFE@dihpawjiv',
 'CLOUD_NAME': 'dihpawjiv',
 'API_KEY': '775396613481496',
 'API_SECRET': 'vUrf-g-hPlBQYXdwW53W2wShEFE'
 }
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

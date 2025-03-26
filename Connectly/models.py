@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 import datetime
-from cloudinary_storage.storage import MediaCloudinaryStorage
+from cloudinary_storage.storage import MediaCloudinaryStorage, RawMediaCloudinaryStorage
 from cloudinary_storage.storage import MediaCloudinaryStorage
 
 def upload_location(instance, filename):    #creates a name for a file
@@ -33,7 +33,7 @@ def create_profile(sender,instance,created,**kwargs):   #signals, if a user is c
 post_save.connect(create_profile, sender=User)
 class Post(models.Model):
     likes = models.ManyToManyField(Profile, related_name='liked', symmetrical=False, blank=True)
-    media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file],storage=MediaCloudinaryStorage(), blank=False, null=True)
+    media_file = models.FileField(upload_to=upload_location, validators=[validate_media_file],storage=RawMediaCloudinaryStorage(), blank=False, null=True)
     author = models.ForeignKey(User,related_name='posts', on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
