@@ -142,13 +142,11 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / 'static_cdn'
 
-if DEBUG:
-    MEDIA_ROOT = BASE_DIR / 'media'
-else:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': 'CLOUDINARY_URL'
-    }
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+}
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
