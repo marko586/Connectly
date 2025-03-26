@@ -8,8 +8,9 @@ from allauth.socialaccount.views import login_cancelled, login_error
 from allauth.socialaccount.providers.google.views import oauth2_login, oauth2_callback
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib import admin
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', include('Connectly.urls')),
     path('accounts/google/login/', oauth2_login, name='google_login'),
     path('accounts/google/login/callback/', oauth2_callback, name='google_callback'),

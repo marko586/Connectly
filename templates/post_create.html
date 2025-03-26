@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
         <div class="side-nav">
-        <a href="http://localhost:8000/home/" class="icon-link">
+        <a href="{% url 'home' %}" class="icon-link">
             <i class="bi bi-house-door-fill icon"></i>
             <span>Home</span>
         </a>
@@ -10,15 +10,15 @@
             <i class="bi bi-search icon"></i>
             <span>Search</span>
         </a>
-        <a href="http://localhost:8000/profile/{{ request.user.profile.user_id }}" class="icon-link">
+        <a href="{% url "profile" request.user.id %}" class="icon-link">
             <i class="bi bi-person-circle icon"></i>
             <span>Profile</span>
         </a>
-        <a href="http://localhost:8000/create/" class="icon-link">
+        <a href="{% url 'create' %}" class="icon-link">
             <i class="bi bi-plus-circle"></i>
             <span>Add Post</span>
         </a>
-        <a href="http://localhost:8000/logout/" class="icon-link">
+        <a href="{% url 'logout' %}" class="icon-link">
             <i class="bi bi-box-arrow-left"></i>
             <span>Logout</span>
         </a>
