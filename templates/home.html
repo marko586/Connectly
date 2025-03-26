@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cloudinary %}
 {% block content %}
 <div class="container mx-auto py-8">
     <!-- Sidebar -->
@@ -62,7 +63,7 @@
             </div>
             {% if post.get_media_type == "image" %}
                 <div class="ratio ratio-4x3 rounded overflow-hidden mb-3 w-full">
-                    <img src="{{ post.media_file.url }}" alt="Uploaded Image" class="object-contain w-100 h-100">
+                    <img src="{% cloudinary_image post.media_file %}" alt="Uploaded Image" class="object-contain w-100 h-100">
                 </div>
             {% elif post.get_media_type == "video" %}
                 <div class="ratio ratio-4x3 rounded overflow-hidden mb-3 w-full">
