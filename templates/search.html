@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Side Navigation -->
+<div class="side-nav">
+    <a href="{% url 'home' %}" class="icon-link">
+        <i class="bi bi-house-door-fill icon"></i>
+        <span>Home</span>
+    </a>
+    <a href="{% url 'search' %}" class="icon-link active">
+        <i class="bi bi-search icon"></i>
+        <span>Search</span>
+    </a>
+    <a href="{% url 'profile' user.profile.user_id %}" class="icon-link">
+        <i class="bi bi-person-circle icon"></i>
+        <span>Profile</span>
+    </a>
+    <a href="{% url 'create' %}" class="icon-link">
+        <i class="bi bi-plus-circle"></i>
+        <span>Add Post</span>
+    </a>
+    <a href="{% url 'logout' %}" class="icon-link">
+        <i class="bi bi-box-arrow-left"></i>
+        <span>Logout</span>
+    </a>
+</div>
+
+<!-- Search Section -->
+<div class="container mx-auto mt-10 pl-80">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">Search</h1>
+        <form action="" method="get" class="flex justify-center mb-8">
+            <input type="text" name="q" placeholder="Search for profiles" class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white" />
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Search
+            </button>
+        </form>
+        <div class="results">
+            {% if searched %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for result in searched %}
+                        <div class="result-card bg-gray-800 p-4 rounded shadow hover:shadow-lg transition-shadow">
+                            <img src="{% if result.profile.profile_picture %}{{ result.profile.profile_picture.url }}{% else %}https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg{% endif %}" 
+                             alt="Profile Picture" 
+                             class="w-12 h-12 rounded-full mr-4">
+                            <a href="{% url 'profile' result.profile.user_id %}"><h2 class="text-xl font-semibold mb-2">{{ result.username }}</h2></a>
+                            <p class="text-gray-300">{{ result.profile.bio|truncatewords:20|default:"No bio yet" }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-gray-300">No results found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

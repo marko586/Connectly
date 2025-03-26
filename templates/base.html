@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Connectly{% endblock title %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Ldoi8YqAAAAAHGvvhEBehqL1NbPrqwwL18zOZF7"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAAAM1BMVEUAUv////9Aff/f6f8gaP/v9P8QXf+fvv9gkv+/1P8wc/+AqP9QiP+Qs/9vnv+vyf/P3/+xY2WpAAAEsklEQVR4nO2d23qjMAyEE3OGAHn/p93QtE1zZEaSbdhP//06s0KWLVtWDwfHcRzHcRzHcRzHce4oy3BqvziFUOZWs0YdpnEujg8UXTOFOre2l5Rt8yT3Tvo89bk13hPGj4J/hTenrVg8jBWi+JvmlFvvxY2HM6H42955Jydn5BtdyCe5Eym+mrvNIrlXSM4kux51khe6xL49yXz5kZRTUusZN9L5yGAleSGNsUszM18pEoS/1sab/zLE1mwQNJ6JG0ZqY9f4oYiouoT2chKqaI4dT/OFSLGvt5+Cf4kyHSNrjqI6uuYIqsv4ms39OuocvGGaiiXSfKwsE/ZIa8ozhquM6bbuM2crzW06zcfjaKM5SeC4YRNCEk3CHyoLt07o0Fc6veYytebjcVKLTuwcC2oHSe4cC0oHEUeOojh3Z/FX0qUEDf+DVTOdfr9vHdqGPla9/JdVhmZ/rRte+GPZ0tsAzVzkDF2Nbz9riV0V3IaS3xgE6neGzz/UUrLlCQFj6Hk1TpVMJBKbmvBo7GyL2ZZLvRo39IzaBTe2MIDghiYc8AQHflmsRrfRFbWZhF1EtiyCo7N5HaxaMhXReEfnoqhqSdQDp6Eg0QA3NJJ0EbOHaBEAPyI/FbGBG4lmNPLxBoG8Q3xMAe2g+PgBeYc4c8bcmo0f0MoidI4FyEFYm0AriyKXq5EvyRoFcWmFoTGrsPsPJEfSJc2IqTmnroERVYY+HCbgJ7jzaiRKK2/RaiCAcJtqwAyqjHkBmDbcxwRuk9VnssDX5AwDrFjqmwbAPypqwPWpzY33EsAyVIBaH27WiwYmDvM5gUXc4KYScGpmIe/XhzO48qvDKszqAthgYyW6F07ronNLfAbYzeSW+My6aPV6aI+LTsV/KtpgFbcGCHlbeZFwA1hctvfoBth7WFTurC/jjGkA0foLbOR7UqZZHy7N1pTKQ3eZBMzGRngJkI5T4wGZsjoLAOIqd66+kSMEbuJs5LCG+5oJjsWQE0jSLvbHgwl+ATnqVU1FxNDs/RYypqpAKsahOnR9oSiQinJ9gV0UiQMIdlFEf0noFU4hnYvQlRx/ZYtdfgq3TbEuP5GdgWxg+JpZcIgFvtKKd6Ev2SeA5uDL+NHSCVGaARbuRCtSEa0CcJFUnHIg2RxHtmFXohReCTNnvMQNfiiLv8GUbteJqk3sVTLzPFdclcEU464bu2bKNuV5EVUguyK7Hqj6ccXDEbLuuXkb/UjJqgSUM/WF86seL/VEF32rXugIyuuLebodwdV9S5Z7X8fQaCZi9ePPFl1XFNJ/rXwKhZSSmKPM87G6IGP0r7eAG2drDE6R9/jgLLmD2LxY3eUjyl0+V43U1OM1Zg+D9/kEGytnNcDkfe0ve2wrkCiEGKwq9+yxVcY+m5Lss/3LPhvt7LOl0T6bRx0ibVS72GU6e2yIZu/YKVrPHYxdBH6eq8XO2FXKfrKTjewxbaFcKTh7eiRDH1mt7EytbzWyM3brlcrOKPlLNtdMYqEaNvCeIHzuS/6gOLOR/xBG6BiqajbWEL5caU5TNFtrBP/N0nK/e5JenJtpMw3g31L3IVz/uEEb+u3VWTuO4ziO4ziO4zhOZv4B2CM5+pniOqsAAAAASUVORK5CYII=">
+</head>
+<body>
+{% include 'messages.html' %}
+    {% block content %}{% endblock content %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

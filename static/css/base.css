@@ -1,0 +1,437 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #2e2e2e; /* Dark background */
+    color: #fff; /* White text for contrast */
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.navbar h2 {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #00aaff;
+    cursor: pointer;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li {
+    font-size: 1em;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.navbar ul li:hover {
+    color: #00aaff;
+}
+
+/* Sections */
+.section {
+    min-height: 100vh;
+    padding: 80px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.section h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.section p {
+    font-size: 1.2em;
+    line-height: 1.8;
+    max-width: 800px;
+}
+
+/* Welcome Section */
+.welcome-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+
+.welcome-buttons button {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.welcome-buttons .login-btn {
+    background: transparent;
+    border: 2px solid #ffffff;
+}
+
+.welcome-buttons .login-btn:hover {
+    background: #00aaff;
+    border-color: #00aaff;
+}
+
+.welcome-buttons .signup-btn {
+    background: #00aaff;
+}
+
+.welcome-buttons .signup-btn:hover {
+    background: #004080;
+}
+
+/* About Section */
+#about {
+    background: rgba(50, 50, 50, 0.9);
+}
+
+/* Contact Section */
+#contact {
+    background: linear-gradient(135deg, #005cff, #00aaff);
+    color: #ffffff;
+    padding: 40px 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+.contact-form button {
+    padding: 15px 40px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #ffffff;
+    background: #0049cc;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.contact-form button:hover {
+    background: #002080;
+}
+
+/* Footer */
+footer {
+    padding: 20px;
+    text-align: center;
+    background: #000000;
+    color: #bdbdbd;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #00aaff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Popup Styling */
+.popup {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: -300px; /* Initially off-screen */
+    background-color: #002080; /* Soft red */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    transition: left 0.5s ease;
+}
+
+.popup.hide {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Профіть різати тут*/
+
+
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #2e2e2e;
+    color: #fff;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+/* Sidebar */
+.side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 60px;
+    background-color: #333;
+    color: white;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: width 0.3s;
+}
+
+.side-nav a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    font-size: 20px;
+    transition: background-color 0.3s, padding-left 0.3s;
+}
+
+.side-nav a .icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.side-nav a span {
+    display: none;
+    margin-left: 15px;
+}
+
+.side-nav:hover {
+    width: 250px;
+}
+
+.side-nav:hover a span {
+    display: inline-block;
+}
+
+.side-nav a:hover {
+    background-color: #555;
+}
+
+/* Profile Section */
+.profile-section {
+    margin-left: 270px;
+    padding: 40px 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Profile Image as Circle */
+.profile-header img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}
+
+.profile-header .profile-info {
+    color: #fff;
+}
+
+.profile-header .profile-info h1 {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.profile-header .profile-info p {
+    color: #bbb;
+    font-size: 1.1em;
+}
+
+.profile-header .edit-btn {
+    background-color: #0095F6;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-header .edit-btn:hover {
+    background-color: #0078B4;
+}
+
+/* Stats Section */
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.profile-stats .stat {
+    text-align: center;
+}
+
+.profile-stats .stat span {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Navbar */
+.navbar-custom {
+    background-color: #444;
+    display: flex;
+    padding: 10px;
+    border-radius: 10px;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.navbar-custom a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.navbar-custom a:hover {
+    color: #00aaff;
+}
+
+.navbar-custom a.active {
+    color: #00aaff;
+}
+
+/* Posts Section */
+.posts-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.post {
+    background-color: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Square Image for Posts */
+.post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 400px; /* Set max size for images */
+    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+    transition: transform 0.3s;
+}
+
+.post img:hover {
+    transform: scale(1.05);
+}
+
+.post .post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.post:hover .post-overlay {
+    opacity: 1;
+}
+
+.post .post-overlay a {
+    color: #fff;
+    font-size: 1.2em;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.post .post-overlay a:hover {
+    color: #0095F6;
+}
+
+/* Footer */
+footer {
+    background-color: #111;
+    color: #bbb;
+    padding: 20px;
+    text-align: center;
+    font-size: 1em;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+/* Prevent links from changing color */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: inherit;
+    text-decoration: none;
+}
