@@ -145,7 +145,10 @@ STATIC_ROOT = BASE_DIR / 'static_cdn'
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE = {
-'CLOUDINARY_URL': 'cloudinary://775396613481496:vUrf-g-hPlBQYXdwW53W2wShEFE@dihpawjiv'
+'CLOUDINARY_URL': 'cloudinary://775396613481496:vUrf-g-hPlBQYXdwW53W2wShEFE@dihpawjiv',
+'CLOUD_NAME': 'dihpawjiv',
+'API_KEY': '775396613481496',
+'API_SECRET': 'vUrf-g-hPlBQYXdwW53W2wShEFE'
 }
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
