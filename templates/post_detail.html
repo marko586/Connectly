@@ -16,6 +16,9 @@
           <!-- User Info Above Image -->
           <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
             <span class="fw-bold">{{ instance.author }}</span>
+          {% if instance.author.profile.user_id == request.user.id %}
+              <p></p>
+          {% else %}
             <form method="post">
               {% csrf_token %}
               {% if user.profile in instance.author.profile.followed_by.all %}
@@ -26,6 +29,7 @@
                 <button type="submit" name="follow" value="follow" class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
               {% endif %}
             </form>
+          {% endif %}
           </div>
           <!-- Post Media -->
           {% if instance.get_media_type == "image" %}

@@ -95,7 +95,7 @@ def welcome(request):           #page for non logged in users
 
             if not validate_recaptcha(recaptcha_token, "CONTACT"):
                 messages.error(request, 'reCAPTCHA validation failed. Please try again.')
-                return redirect('login')
+                return redirect('welcome')
             else:
                 email = request.POST.get('email')
                 name = request.POST.get('name')
