@@ -50,7 +50,7 @@ def create_assessment(
         )
         return None
 
-    # Check if the expected action was executed
+    # Checks if the expected action was executed
     if response.token_properties.action != recaptcha_action:
         print(
             "The action attribute in your reCAPTCHA tag does"
