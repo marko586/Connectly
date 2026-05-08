@@ -259,6 +259,7 @@ def register_user(request):
 
     initial = {}
     sociallogin = request.session.get('socialaccount_sociallogin')
+
     if sociallogin:
         extra_data = sociallogin['account']['extra_data']
         initial = {
@@ -274,25 +275,17 @@ def register_user(request):
             user = form.save(commit=False)
             user.first_name = form.cleaned_data.get('first_name')
             user.last_name = form.cleaned_data.get('last_name')
-            user.is_active = False
+
+            # Temporary demo mode: account is activated immediately
+            user.is_active = True
             user.save()
 
-            otp_code = generate_otp_code()
+            login(request, user)
 
-            try:
-                send_otp_email(user.email, otp_code)
-            except Exception as e:
-                user.delete()
-                messages.error(request, f"Could not send OTP email: {e}")
-                return redirect("register")
-
-            request.session['tmp_user_id'] = user.id
-            request.session['otp_code'] = otp_code
-
-            messages.info(request, 'A verification code has been sent to your email. Please enter it to activate your account.')
-            return redirect('verify_otp')
+            messages.success(request, 'Account created successfully!')
+            return redirect(reverse('profile', kwargs={'user_id': user.id}))
         else:
-            messages.error(request, 'Something went wrong. Please try again.')
+            messages.error(request, form.errors.as_text())
 
     return render(request, 'register.html', {'form': form})
 
