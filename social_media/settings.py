@@ -191,7 +191,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'markosysak@gmail.com'
-EMAIL_HOST_PASSWORD = 'etuf awbo njdo hwjs'
+EMAIL_HOST_PASSWORD = 'oyjr ugly uoxf rcgz'
 
 
 
