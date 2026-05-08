@@ -173,7 +173,7 @@ ACCOUNT_FORMS = {
     'signup': 'Connectly.forms.CustomSocialSignupForm',
 }
 
-# Google OAuth credentials
+# Google OAuth credential
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
