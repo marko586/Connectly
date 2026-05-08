@@ -290,7 +290,11 @@ def register_user(request):
             user.is_active = True
             user.save()
 
-            login(request, user)
+            login(
+                request,
+                user,
+                backend='django.contrib.auth.backends.ModelBackend'
+            )
 
             messages.success(request, 'Account created successfully!')
             return redirect(reverse('profile', kwargs={'user_id': user.id}))
