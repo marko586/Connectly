@@ -210,7 +210,7 @@ def post_create(request):           #post creation form
     else:
         messages.success(request, 'You are not logged in')
         return redirect('welcome')
-def login_user(request):        #login page
+def login_user(request):
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.profile.user_id}))
 
@@ -224,23 +224,33 @@ def login_user(request):        #login page
             return redirect('login')
 
         user = None
+
         if "@" in username_or_email:
             try:
                 user_obj = User.objects.get(email=username_or_email)
-                user = authenticate(request, username=user_obj.username, password=password)
+                user = authenticate(
+                    request,
+                    username=user_obj.username,
+                    password=password
+                )
             except User.DoesNotExist:
                 user = None
         else:
-            user = authenticate(request, username=username_or_email, password=password)
+            user = authenticate(
+                request,
+                username=username_or_email,
+                password=password
+            )
 
         if user is not None:
-            code = generate_otp_code()
-            send_otp_email(user.email, code)
-            request.session['tmp_user_id'] = user.id
-            request.session['otp_code'] = code
+            login(
+                request,
+                user,
+                backend='django.contrib.auth.backends.ModelBackend'
+            )
 
-            messages.info(request, 'An OTP has been sent to your email. Please verify.')
-            return redirect('verify_otp')
+            messages.success(request, 'You have been logged in successfully!')
+            return redirect(reverse('profile', kwargs={'user_id': user.id}))
         else:
             messages.error(request, 'Invalid credentials. Please try again.')
             return redirect('login')
