@@ -253,7 +253,7 @@ def logout_user(request):    #logut func
     messages.success(request, 'You have been logged out')
     return redirect('welcome')
 
-def register_user(request):             #registration form
+def register_user(request):
     if request.user.is_authenticated:
         return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
 
@@ -276,8 +276,16 @@ def register_user(request):             #registration form
             user.last_name = form.cleaned_data.get('last_name')
             user.is_active = False
             user.save()
+
             otp_code = generate_otp_code()
-            send_otp_email(user.email, otp_code)
+
+            try:
+                send_otp_email(user.email, otp_code)
+            except Exception as e:
+                user.delete()
+                messages.error(request, f"Could not send OTP email: {e}")
+                return redirect("register")
+
             request.session['tmp_user_id'] = user.id
             request.session['otp_code'] = otp_code
 
